@@ -34,6 +34,7 @@ int S3ORAM::build(TYPE_POS_MAP* pos_map, TYPE_ID** metaData)
 	int div = ceil(NUM_BLOCK/(double)N_leaf);
 	assert(div <= BUCKET_SIZE && "ERROR: CHECK THE PARAMETERS => LEAVES CANNOT STORE ALL");
 	
+    //每一个bucket是一个二维数组，行代表bucket中所有blocks的第一个chunk。初始化为0
   	TYPE_DATA** bucket = new TYPE_DATA*[DATA_CHUNKS];
     for (int i = 0 ; i < DATA_CHUNKS; i++ )
     {
@@ -66,6 +67,8 @@ int S3ORAM::build(TYPE_POS_MAP* pos_map, TYPE_ID** metaData)
     
     
     //non-leaf buckets are all empty
+    //将非叶子节点写成文件存到磁盘中，一个bucket对应一个文件，按行写入文件
+    //注意：bucket表示一个bucket，这里是将同一个bucket写入到不同的bucket文件中，因为都是初始化0的状态
     for(TYPE_INDEX i = 0 ; i < NUM_NODES/2; i ++)
     {
         file_out = NULL;
@@ -83,11 +86,13 @@ int S3ORAM::build(TYPE_POS_MAP* pos_map, TYPE_ID** metaData)
     }
     
     //generate random blocks in leaf-buckets
+    //叶子节点全部初始化为0（但是之前已经都初始化过一次了？）
+    //metaData是记录了block存放在哪个bucket的哪个位置
     TYPE_INDEX iter= 0;
     for(TYPE_INDEX i = NUM_NODES/2 ; i < NUM_NODES; i++)
     {
         memset(bucket[0],0,sizeof(TYPE_DATA)*BUCKET_SIZE);
-        for(int ii = BUCKET_SIZE/2 ; ii<BUCKET_SIZE; ii++)
+        for(int ii = BUCKET_SIZE/2 ; ii<BUCKET_SIZE; ii++)  //将这个bucket填充完（填充一半的bucket）
         {
             if(iter>=NUM_BLOCK)
                 break;
