@@ -36,14 +36,14 @@ int S3ORAM::build(TYPE_POS_MAP* pos_map, TYPE_ID** metaData)
 	
     //每一个bucket是一个二维数组，行代表bucket中所有blocks的第一个chunk。初始化为0
   	TYPE_DATA** bucket = new TYPE_DATA*[DATA_CHUNKS];
-    for (int i = 0 ; i < DATA_CHUNKS; i++ )
+    for (int i = 0 ; i < DATA_CHUNKS; i++)
     {
         bucket[i] = new TYPE_DATA[BUCKET_SIZE];
         memset(bucket[i],0,sizeof(TYPE_DATA)*BUCKET_SIZE);
     }
     
     TYPE_DATA** temp = new TYPE_DATA*[DATA_CHUNKS];
-    for (int i = 0 ; i < DATA_CHUNKS; i++ )
+    for (int i = 0 ; i < DATA_CHUNKS; i++)
     {
         temp[i] = new TYPE_DATA[BUCKET_SIZE];
         memset(temp[i],0,sizeof(TYPE_DATA)*BUCKET_SIZE);
@@ -86,7 +86,7 @@ int S3ORAM::build(TYPE_POS_MAP* pos_map, TYPE_ID** metaData)
     }
     
     //generate random blocks in leaf-buckets
-    //叶子节点全部初始化为0（但是之前已经都初始化过一次了？）
+    //叶子节点第一行要初始化，是因为每次数据都写在第一行了
     //metaData是记录了block存放在哪个bucket的哪个位置
     TYPE_INDEX iter= 0;
     for(TYPE_INDEX i = NUM_NODES/2 ; i < NUM_NODES; i++)
@@ -98,7 +98,7 @@ int S3ORAM::build(TYPE_POS_MAP* pos_map, TYPE_ID** metaData)
                 break;
             bucket[0][ii] = blockIDs[iter];
             pos_map[blockIDs[iter]].pathID = i;
-            pos_map[blockIDs[iter]].pathIdx = ii+(BUCKET_SIZE*H)  ;
+            pos_map[blockIDs[iter]].pathIdx = ii+(BUCKET_SIZE*H);
             metaData[i][ii]= blockIDs[iter];
             
             iter++;
@@ -124,6 +124,7 @@ int S3ORAM::build(TYPE_POS_MAP* pos_map, TYPE_ID** metaData)
     cout<< "[S3ORAM] Creating Shares on Disk" << endl;
     boost::progress_display show_progress(NUM_NODES);
     
+    //初始化每个服务器的bucket
     TYPE_DATA*** bucketShares = new TYPE_DATA**[NUM_SERVERS];
     for(TYPE_INDEX k = 0; k < NUM_SERVERS; k++)
     {
@@ -135,7 +136,7 @@ int S3ORAM::build(TYPE_POS_MAP* pos_map, TYPE_ID** metaData)
     }
         
 		
-    TYPE_DATA shares[DATA_CHUNKS][NUM_SERVERS];
+    TYPE_DATA shares[DATA_CHUNKS][NUM_SERVERS]; //一个值的shares
     FILE* file_in = NULL;
     file_out = NULL;
         

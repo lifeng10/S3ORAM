@@ -4,7 +4,7 @@
  *  Created on: May 1, 2017
  *      Author: ceyhunozkaptan, thanghoang
  */
- 
+
 #ifndef STRUCT_THREAD_LOADDATA_H
 #define  STRUCT_THREAD_LOADDATA_H
 
@@ -13,7 +13,7 @@ typedef struct struct_thread_loadData
 {
     int serverNo;
 	zz_p** data_vector;
-   
+
     //thread
     TYPE_INDEX startIdx,endIdx;
     
@@ -25,7 +25,7 @@ typedef struct struct_thread_loadData
     TYPE_INDEX idx[2]; //incld src & dest (or sibl) for matrix permutation
     
     //for retrieval
-     struct_thread_loadData(int serverNo, TYPE_INDEX start, TYPE_INDEX end, zz_p** data_vector, TYPE_INDEX* fullPathIdx, int fullPathIdx_length)
+    struct_thread_loadData(int serverNo, TYPE_INDEX start, TYPE_INDEX end, zz_p** data_vector, TYPE_INDEX* fullPathIdx, int fullPathIdx_length)
     {
         this->serverNo = serverNo;
         this->startIdx = start;

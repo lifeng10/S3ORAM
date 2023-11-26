@@ -11,7 +11,7 @@
 
 
 unsigned long int ClientS3ORAM::exp_logs[9];
-unsigned long int ClientS3ORAM::thread_max = 0;
+unsigned long int ClientS3ORAM::thread_max = 0; //用于记录执行线程的时间。因为有多个线程，只记录耗时最长的线程所用的时间
 char ClientS3ORAM::timestamp[16];
 
 ClientS3ORAM::ClientS3ORAM()
@@ -429,7 +429,7 @@ int ClientS3ORAM::access(TYPE_ID blockID)
     
     TYPE_INDEX fullPathIdx[H+1];
     ORAM.getFullPathIdx(fullPathIdx,pathID);
-    this->metaData[fullPathIdx[pos_map[blockID].pathIdx / BUCKET_SIZE ]][pos_map[blockID].pathIdx % BUCKET_SIZE] = 0;
+    this->metaData[fullPathIdx[pos_map[blockID].pathIdx / BUCKET_SIZE ]][pos_map[blockID].pathIdx % BUCKET_SIZE] = 0; //对应的block位置清空
     
     // 6.1. assign to random path
     pos_map[blockID].pathID = Utils::RandBound(N_leaf)+(N_leaf-1);
@@ -728,6 +728,7 @@ void* ClientS3ORAM::thread_socket_func(void* args)
 		
     pthread_exit((void*)opt);
 }
+
 int ClientS3ORAM::sendNrecv(std::string ADDR, unsigned char* data_out, size_t data_out_size, unsigned char* data_in, size_t data_in_size, int CMD)
 {
 	zmq::context_t context(1);
