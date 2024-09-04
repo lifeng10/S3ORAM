@@ -37,7 +37,7 @@ static inline std::string to_string(T value)
 
 #define NTL_LIB //disable it if compiled for android
 //=== PARAMETERS ============================================================
-#define BLOCK_SIZE 128
+#define BLOCK_SIZE 512
 #define HEIGHT 4
 #define BUCKET_SIZE 333 
 #define EVICT_RATE 280

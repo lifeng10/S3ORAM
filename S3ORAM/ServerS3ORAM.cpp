@@ -132,7 +132,8 @@ ServerS3ORAM::~ServerS3ORAM()
  * 
  * @return 0 if successful
  */ 
-int ServerS3ORAM::start()
+int ServerS3ORAM::
+start()
 {
 	int ret = 1;
 	int CMD;

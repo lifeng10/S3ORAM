@@ -31,3 +31,8 @@
 *.out
 *.app
 .vscode/sftp.json
+
+# Data Files
+[0-9]_*
+.vscode
+data/
